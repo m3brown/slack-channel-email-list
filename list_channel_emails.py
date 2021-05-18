@@ -15,8 +15,7 @@ if not args.t:
     sys.exit(2)
 
 sc = SlackClient(args.t)
-channels = sc.api_call("channels.list", exclude_archived=1)
-for channel in sc.api_call("channels.list", exclude_archived=1)["channels"]:
+for channel in sc.api_call("conversations.list", exclude_archived=1)["channels"]:
     if channel["name"] == args.channel:
         channel_id = channel["id"]
         break
@@ -24,7 +23,7 @@ else:
     raise Exception("Could not find channel: {}".format(args.channel))
 
 all_users = sc.api_call("users.list")["members"]
-channel_members = sc.api_call("channels.info", channel=channel_id)["channel"]["members"]
+channel_members = sc.api_call("conversations.members", channel=channel_id)["members"]
 
 for user in all_users:
     if user["id"] in channel_members and not user["deleted"]:
